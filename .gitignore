@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# BioMark results — don't commit these
+results/
+*.json
+*.html
+
+# Environment
+.env
+.venv
+venv/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+.env
+data/
+results/
+*.json
+*.html
