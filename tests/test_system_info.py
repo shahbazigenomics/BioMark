@@ -64,3 +64,36 @@ def test_non_mac_has_core_counts_but_no_core_mix():
         cpu = system_info.get_cpu_info()
     assert "core_mix" not in cpu
     assert cpu["physical_cores"] is None or cpu["physical_cores"] >= 1
+
+
+def test_linux_pretty_name_reads_os_release(tmp_path):
+    f = tmp_path / "os-release"
+    f.write_text('NAME="Ubuntu"\nPRETTY_NAME="Ubuntu 24.04 LTS"\n')
+    assert system_info._linux_pretty_name(str(f)) == "Ubuntu 24.04 LTS"
+
+
+def test_linux_pretty_name_missing_file_returns_none(tmp_path):
+    assert system_info._linux_pretty_name(str(tmp_path / "nope")) is None
+
+
+def test_os_version_on_linux_uses_distro_name():
+    with patch.object(system_info.platform, "system", return_value="Linux"), \
+         patch.object(system_info, "_linux_pretty_name", return_value="Ubuntu 24.04 LTS"):
+        info = system_info.get_os_info()
+    assert info["os_version"] == "Ubuntu 24.04 LTS"
+    assert "macos_version" not in info
+
+
+def test_os_version_on_linux_falls_back_to_kernel_release():
+    with patch.object(system_info.platform, "system", return_value="Linux"), \
+         patch.object(system_info, "_linux_pretty_name", return_value=None), \
+         patch.object(system_info.platform, "release", return_value="6.8.0"):
+        info = system_info.get_os_info()
+    assert info["os_version"] == "6.8.0"
+
+
+def test_os_version_on_mac_matches_macos_version():
+    with patch.object(system_info.platform, "system", return_value="Darwin"), \
+         patch.object(system_info.platform, "mac_ver", return_value=("27.0.1", ("", "", ""), "arm64")):
+        info = system_info.get_os_info()
+    assert info["os_version"] == info["macos_version"] == "27.0.1"

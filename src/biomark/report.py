@@ -744,7 +744,8 @@ def generate_html_report(system_profile, benchmark_results,
     ssd_free  = storage.get("free_gb","N/A")
     ssd_pct   = storage.get("percent_used", 0)
     gpu_model = gpu.get("model","N/A")
-    macos     = os_info.get("macos_version","N/A")
+    os_ver    = os_info.get("os_version", os_info.get("macos_version", "N/A"))
+    os_label  = f"macOS {os_ver}" if os_info.get("system") == "Darwin" else os_ver
     python_v  = os_info.get("python_version","N/A")
     mac_model = cpu.get("mac_model","N/A")
     cores     = cpu.get("physical_cores","N/A")
@@ -1108,7 +1109,7 @@ def generate_html_report(system_profile, benchmark_results,
     <div style="font-size:0.9rem;opacity:0.85">Overall BioMark Score</div>
     <div class="meta">
         {datetime.now().strftime('%Y-%m-%d %H:%M')} &nbsp;|&nbsp;
-        {mac_model} &nbsp;|&nbsp; macOS {macos}
+        {mac_model} &nbsp;|&nbsp; {os_label}
     </div>
 </div>
 
@@ -1155,7 +1156,7 @@ def generate_html_report(system_profile, benchmark_results,
             <div class="card-icon">🐍</div>
             <div class="card-label">Python</div>
             <div class="card-value">{python_v}</div>
-            <div class="card-sub">macOS {macos}</div>
+            <div class="card-sub">{os_label}</div>
         </div>
     </div>
 
