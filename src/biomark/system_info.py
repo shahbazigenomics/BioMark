@@ -8,6 +8,30 @@ import psutil
 import os
 from datetime import datetime
 
+# ─── Apple silicon core mix (performance levels) ───────────
+def _apple_core_mix():
+    """Return [{"name": ..., "cores": N}, ...] from sysctl hw.perflevelN, or []."""
+    mix = []
+    for i in range(4):
+        try:
+            name = subprocess.run(
+                ["sysctl", "-n", f"hw.perflevel{i}.name"],
+                capture_output=True, text=True
+            )
+            count = subprocess.run(
+                ["sysctl", "-n", f"hw.perflevel{i}.physicalcpu"],
+                capture_output=True, text=True
+            )
+        except Exception:
+            break
+        if name.returncode != 0 or count.returncode != 0:
+            break
+        if not count.stdout.strip().isdigit():
+            break
+        mix.append({"name": name.stdout.strip(), "cores": int(count.stdout.strip())})
+    return mix
+
+
 # ─── Get CPU Info ──────────────────────────────────────────
 def get_cpu_info():
     cpu = {}
@@ -39,8 +63,11 @@ def get_cpu_info():
             )
             for line in result3.stdout.split("\n"):
                 if "Chip" in line or "Processor" in line:
-                    cpu["apple_chip"] = line.strip()
+                    value = line.split(":", 1)[1].strip() if ":" in line else line.strip()
+                    cpu["apple_chip"] = value
                     break
+
+            cpu["core_mix"] = _apple_core_mix()
 
         except Exception as e:
             cpu["brand"] = "Unknown"
@@ -161,8 +188,10 @@ def print_system_profile(profile):
     print(f"     Chip      : {cpu.get('apple_chip', cpu.get('brand', 'N/A'))}")
     print(f"     Model     : {cpu.get('mac_model', 'N/A')}")
     print(f"     Arch      : {cpu.get('architecture', 'N/A')}")
-    print(f"     P-Cores   : {cpu.get('physical_cores', 'N/A')}")
-    print(f"     L-Cores   : {cpu.get('logical_cores', 'N/A')}")
+    print(f"     Cores     : {cpu.get('physical_cores', 'N/A')} physical / {cpu.get('logical_cores', 'N/A')} logical")
+    mix = cpu.get("core_mix")
+    if mix:
+        print("     Core mix  : " + " + ".join(f"{m['cores']} {m['name']}" for m in mix))
 
     # RAM
     ram = profile["ram"]
