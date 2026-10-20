@@ -116,33 +116,40 @@ BioMark is functional and actively developed. All 8 benchmark modules are workin
 
 ### Installation
 
+Recommended: install the `biomark` command in its own isolated environment with [pipx](https://pipx.pypa.io):
+
 ```bash
-# Clone the repository
+pipx install git+https://github.com/shahbazigenomics/BioMark.git
+```
+
+Or install from source:
+
+```bash
 git clone https://github.com/shahbazigenomics/BioMark.git
 cd BioMark
-
-# Install dependencies
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
 
 ### Run Benchmarks
 
 ```bash
 # Show your system hardware profile
-python src/main.py --sysinfo
+biomark --sysinfo
 
 # Run a specific module
-python src/main.py --dna          # DNA/WES pipeline
-python src/main.py --rna          # Bulk RNA-seq
-python src/main.py --scrna        # Single-cell RNA-seq
-python src/main.py --protein      # Protein structure
-python src/main.py --epigenomics  # ChIP-seq + ATAC-seq
-python src/main.py --metagenomics # Metagenomics
-python src/main.py --longread     # Nanopore + PacBio
-python src/main.py --assembly     # Genome assembly
+biomark --dna          # DNA/WES pipeline
+biomark --rna          # Bulk RNA-seq
+biomark --scrna        # Single-cell RNA-seq
+biomark --protein      # Protein structure
+biomark --epigenomics  # ChIP-seq + ATAC-seq
+biomark --metagenomics # Metagenomics
+biomark --longread     # Nanopore + PacBio
+biomark --assembly     # Genome assembly
 
 # Run ALL modules (full benchmark)
-python src/main.py --all
+biomark --all
 ```
 
 ---
@@ -221,29 +228,31 @@ BioMark/
 
 ├── src/
 
-│   ├── main.py              # Main entry point + CLI
+│   └── biomark/
 
-│   ├── system_info.py       # Hardware detection
+│       ├── main.py              # Main entry point + CLI
 
-│   ├── report.py            # HTML report generator
+│       ├── system_info.py       # Hardware detection
 
-│   ├── utils.py             # Utilities + JSON encoder
+│       ├── report.py            # HTML report generator
 
-│   └── modules/
+│       ├── utils.py             # Utilities + JSON encoder
 
-│       ├── DNA/             # WES pipeline benchmark
+│       └── modules/
 
-│       ├── RNA/             # Bulk RNA-seq + scRNA-seq
+│           ├── DNA/             # WES pipeline benchmark
 
-│       ├── Protein/         # AlphaFold2 + ESMFold + BLAST
+│           ├── RNA/             # Bulk RNA-seq + scRNA-seq
 
-│       ├── Epigenomics/     # ChIP-seq + ATAC-seq
+│           ├── Protein/         # AlphaFold2 + ESMFold + BLAST
 
-│       ├── Metagenomics/    # Kraken2 + MetaPhlAn4 + QIIME2
+│           ├── Epigenomics/     # ChIP-seq + ATAC-seq
 
-│       ├── LongRead/        # Nanopore + PacBio pipelines
+│           ├── Metagenomics/    # Kraken2 + MetaPhlAn4 + QIIME2
 
-│       └── Assembly/        # SPAdes + Flye + Hifiasm
+│           ├── LongRead/        # Nanopore + PacBio pipelines
+
+│           └── Assembly/        # SPAdes + Flye + Hifiasm
 
 ├── results/                 # Benchmark results (JSON + HTML)
 
@@ -252,6 +261,10 @@ BioMark/
 │   ├── CONTRIBUTING.md      # Contribution guidelines
 
 │   └── INSTALLATION.md      # Detailed installation guide
+
+├── tests/
+
+├── setup.py
 
 ├── requirements.txt
 
@@ -264,7 +277,7 @@ BioMark/
 Run BioMark on your machine and contribute to our community database!
 
 ```bash
-python src/main.py --all --share
+biomark --all --share
 ```
 
 This generates a clean `biomark_share_TIMESTAMP.json` file with your hardware specs and scores.
@@ -288,7 +301,7 @@ We welcome contributions from the bioinformatics community!
 1. **Fork** the repository
 2. **Create a branch** for your feature: `git checkout -b feature/new-module`
 3. **Make your changes** following the existing module structure
-4. **Test** your changes: `python src/main.py --your_module`
+4. **Test** your changes: `biomark --your_module`
 5. **Submit a Pull Request** with a clear description
 
 ### What we need help with
@@ -298,10 +311,10 @@ We welcome contributions from the bioinformatics community!
 - 🌍 Testing on different operating systems and hardware
 
 ### Coding guidelines
-- Follow the existing module structure in `src/modules/`
+- Follow the existing module structure in `src/biomark/modules/`
 - Each step must return a `status` field with `✅ PASS` or `🔴 FAIL`
 - Include honest hardware checks with RAM/SSD thresholds
-- Add your module to `src/main.py` and `src/report.py`
+- Add your module to `src/biomark/main.py` and `src/biomark/report.py`
 
 See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
 
