@@ -220,8 +220,7 @@ def simulate_fastqc_multiqc(n_reads=100000,
             )
         })
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     # MultiQC aggregation simulation
     all_pass    = sum(1 for s in sample_results if s["qc_pass"])
     mean_gc_all = round(
@@ -323,8 +322,7 @@ def simulate_trimming(n_reads=100000,
             )
         }
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Trimming",
         "status"                 : "✅ PASS",
@@ -453,8 +451,7 @@ def simulate_star_alignment(n_reads=50000,
     if genome_index is not None:
         del genome_index
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Alignment_STAR",
         "tool"                   : "STAR 2-pass mode",
@@ -527,8 +524,7 @@ def simulate_hisat2_alignment(n_reads=50000,
         })
         total_aligned += aligned
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Alignment_HISAT2",
         "tool"                   : "HISAT2",
@@ -619,8 +615,7 @@ def simulate_post_processing(n_reads=100000, n_samples=6):
     total_time = round(sum(
         v["time_seconds"] for v in results.values()
     ), 3)
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Post_Processing_Samtools",
         "status"                 : "✅ PASS",
@@ -674,8 +669,7 @@ def simulate_featurecounts(n_reads=100000, n_samples=6):
     expressed_genes = sum(1 for c in all_counts if c > 0)
     mean_count      = round(sum(all_counts) / len(all_counts), 2)
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Quantification_featureCounts",
         "status"                 : "✅ PASS",
@@ -724,8 +718,7 @@ def simulate_salmon(n_reads=100000, n_samples=6):
             "mapping_rate"       : round(random.uniform(75, 92), 2)
         })
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                   : "Quantification_Salmon",
         "status"                 : "✅ PASS",
@@ -832,8 +825,7 @@ def simulate_deseq2(n_genes=60000,
     # Sort by adjusted p-value
     de_genes.sort(key=lambda x: x["padj"])
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     up_regulated   = sum(
         1 for g in de_genes if g["log2FC"] > 0
     )
@@ -896,8 +888,7 @@ def simulate_edger(n_genes=60000, n_disease=3, n_control=3):
                 "FDR"     : round(fdr, 6)
             })
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     return {
         "step"                  : "Differential_Expression_edgeR",
         "status"                : "✅ PASS",
@@ -1003,8 +994,7 @@ def simulate_pathway_analysis(n_de_genes=500):
                 "padj"       : round(padj, 6)
             })
 
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     total_enriched = (
         sum(len(v) for v in go_results.values()) +
         len(kegg_enriched)

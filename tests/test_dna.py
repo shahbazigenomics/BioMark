@@ -99,3 +99,13 @@ def test_simulate_filtering():
     assert "variants_input" in result
     assert result["variants_input"] == 1000
     assert result["final_candidates"] <= 1000
+
+
+def test_steps_survive_zero_elapsed_time():
+    """On very fast machines a step can finish in <0.5 ms; timers must never divide by zero."""
+    from unittest.mock import patch
+    with patch("time.time", return_value=1000.0):
+        annotation = simulate_annotation(n_variants=1000)
+        filtering = simulate_filtering(n_variants=1000)
+    assert annotation["variants_annotated"] == 1000
+    assert filtering["variants_input"] == 1000
