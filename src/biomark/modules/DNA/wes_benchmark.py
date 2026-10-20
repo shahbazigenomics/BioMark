@@ -173,6 +173,7 @@ def simulate_fastqc(n_reads=100000, read_length=150):
     read_time = max(round(time.time() - read_start, 3), 0.001)
     os.remove(test_file)
     elapsed = max(round(time.time() - start, 3), 0.001)
+
     mean_gc   = round(sum(gc_list)/len(gc_list), 2) if gc_list else 0
     speed     = round(file_size_mb / read_time, 2)
     throughput = round(reads_parsed / read_time)
