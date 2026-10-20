@@ -4,9 +4,8 @@
 import pytest
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from modules.RNA.rnaseq_benchmark import (
+from biomark.modules.RNA.rnaseq_benchmark import (
     generate_rna_sequence,
     generate_quality_scores,
     get_system_resources,

@@ -4,9 +4,8 @@
 import pytest
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from modules.DNA.wes_benchmark import (
+from biomark.modules.DNA.wes_benchmark import (
     generate_dna_sequence,
     generate_quality_scores,
     simulate_fastqc,

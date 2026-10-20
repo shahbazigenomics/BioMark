@@ -58,7 +58,7 @@ setup(
       },
       entry_points={
                 "console_scripts": [
-                              "biomark=main:main",
+                              "biomark=biomark.main:main",
                 ],
       },
       include_package_data=True,
