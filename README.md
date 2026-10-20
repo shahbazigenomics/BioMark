@@ -282,6 +282,13 @@ biomark --all --share
 
 This generates a clean `biomark_share_TIMESTAMP.json` file with your hardware specs and scores.
 
+**What's in the file:** only these fields, nothing else.
+- BioMark version and the time the file was created
+- Machine: OS name and version, chip, architecture, physical core count, RAM, SSD total and free space, GPU model, Mac model identifier
+- The score and capability text for each module you ran, and the overall score
+
+It does **not** include your name, username, computer name, file paths, IP address, or any of your files. The file is plain text, so you can open it and check before attaching it. Scores are self-reported and are not verified.
+
 **To submit:**
 1. Open a GitHub Issue: [Submit My Score](https://github.com/shahbazigenomics/BioMark/issues/new)
 2. Title: `Score Submission — [Your Machine] [RAM]GB`
