@@ -140,6 +140,18 @@ def get_gpu_info():
 
 
 # ─── Get OS Info ───────────────────────────────────────────
+def _linux_pretty_name(path="/etc/os-release"):
+    """Return PRETTY_NAME (e.g. 'Ubuntu 24.04 LTS') from /etc/os-release, or None."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("PRETTY_NAME="):
+                    return line.split("=", 1)[1].strip().strip('"').strip("'") or None
+    except OSError:
+        pass
+    return None
+
+
 def get_os_info():
     os_info = {}
     os_info["system"] = platform.system()
@@ -149,6 +161,11 @@ def get_os_info():
 
     if platform.system() == "Darwin":
         os_info["macos_version"] = platform.mac_ver()[0]
+        os_info["os_version"] = os_info["macos_version"]
+    elif platform.system() == "Linux":
+        os_info["os_version"] = _linux_pretty_name() or platform.release()
+    else:
+        os_info["os_version"] = platform.release()
 
     return os_info
 
@@ -179,7 +196,8 @@ def print_system_profile(profile):
     os_i = profile["os"]
     print(f"\n  💻 Operating System")
     print(f"     System    : {os_i.get('system', 'N/A')}")
-    print(f"     macOS     : {os_i.get('macos_version', 'N/A')}")
+    os_label = "macOS     " if os_i.get("system") == "Darwin" else "OS        "
+    print(f"     {os_label}: {os_i.get('os_version', os_i.get('macos_version', 'N/A'))}")
     print(f"     Python    : {os_i.get('python_version', 'N/A')}")
 
     # CPU

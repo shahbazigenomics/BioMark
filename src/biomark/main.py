@@ -76,7 +76,7 @@ def create_share_file(all_results, system_profile):
         "submitted_at"    : timestamp,
         "machine" : {
             "os"          : system_profile.get("os", {}).get("system", "Unknown"),
-            "os_version"  : system_profile.get("os", {}).get("macos_version", "Unknown"),
+            "os_version"  : system_profile.get("os", {}).get("os_version", "Unknown"),
             "chip"        : system_profile.get("cpu", {}).get("brand",
                             system_profile.get("cpu", {}).get("brand", "Unknown")),
             "arch"        : system_profile.get("cpu", {}).get("architecture", "Unknown"),

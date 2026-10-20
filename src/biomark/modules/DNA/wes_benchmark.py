@@ -170,10 +170,9 @@ def simulate_fastqc(n_reads=100000, read_length=150):
             gc_list.append(gc)
             reads_parsed += 1
 
-    read_time = round(time.time() - read_start, 3)
+    read_time = max(round(time.time() - read_start, 3), 0.001)
     os.remove(test_file)
-    elapsed = round(time.time() - start, 3)
-
+    elapsed = max(round(time.time() - start, 3), 0.001)
     mean_gc   = round(sum(gc_list)/len(gc_list), 2) if gc_list else 0
     speed     = round(file_size_mb / read_time, 2)
     throughput = round(reads_parsed / read_time)
@@ -217,7 +216,7 @@ def simulate_trimmomatic(n_reads=100000, read_length=150):
         else:
             dropped += 1
 
-    elapsed    = round(time.time() - start, 3)
+    elapsed    = max(round(time.time() - start, 3), 0.001)
     throughput = round(n_reads / elapsed)
     step_score = min(100, throughput / 50000)
     status     = "✅ PASS"
@@ -247,7 +246,7 @@ def simulate_alignment_bwamem2(n_reads=50000, read_length=150):
         status     = "🔴 FAIL — Insufficient RAM"
         step_score = 0
         note       = f"BWA-MEM2 needs 16GB+ RAM for hg38 index. You have {ram_gb}GB."
-        elapsed    = round(time.time() - start, 3)
+        elapsed    = max(round(time.time() - start, 3), 0.001)
         return {
             "step"          : "Alignment_BWA_MEM2",
             "status"        : status,
@@ -287,7 +286,7 @@ def simulate_alignment_bwamem2(n_reads=50000, read_length=150):
         del ref
 
     align_time = round(time.time() - align_start, 3)
-    elapsed    = round(time.time() - start, 3)
+    elapsed    = max(round(time.time() - start, 3), 0.001)
     throughput = round(n_reads / align_time) if align_time > 0 else 0
     step_score = min(100, throughput / 5000)
     status     = "✅ PASS"
@@ -336,7 +335,7 @@ def simulate_alignment_hisat2(n_reads=50000, read_length=150):
         else:
             unmapped += 1
 
-    elapsed    = round(time.time() - start, 3)
+    elapsed    = max(round(time.time() - start, 3), 0.001)
     throughput = round(n_reads / elapsed)
     step_score = min(100, throughput / 3000)
 
@@ -416,7 +415,7 @@ def simulate_post_alignment(n_reads=100000):
         "time_seconds": round(time.time()-s, 3)
     }
 
-    elapsed    = round(time.time() - start, 3)
+    elapsed    = max(round(time.time() - start, 3), 0.001)
     throughput = round(n_reads / elapsed)
     step_score = min(100, throughput / 20000)
 
@@ -456,7 +455,7 @@ def simulate_variant_calling_gatk(n_positions=200000):
     print("    🧬 Step 5a: Variant Calling (GATK)...")
     start    = time.time()
     variants = _call_variants(n_positions, "GATK")
-    elapsed  = round(time.time() - start, 3)
+    elapsed  = max(round(time.time() - start, 3), 0.001)
     tp       = round(n_positions / elapsed)
     return {
         "step"          : "Variant_Calling_GATK",
@@ -473,7 +472,7 @@ def simulate_variant_calling_bcftools(n_positions=200000):
     print("    🧬 Step 5b: Variant Calling (bcftools)...")
     start    = time.time()
     variants = _call_variants(n_positions, "bcftools")
-    elapsed  = round(time.time() - start, 3)
+    elapsed  = max(round(time.time() - start, 3), 0.001)
     tp       = round(n_positions / elapsed)
     return {
         "step"          : "Variant_Calling_bcftools",
@@ -490,7 +489,7 @@ def simulate_variant_calling_freebayes(n_positions=200000):
     print("    🧬 Step 5c: Variant Calling (FreeBayes)...")
     start    = time.time()
     variants = _call_variants(n_positions, "FreeBayes")
-    elapsed  = round(time.time() - start, 3)
+    elapsed  = max(round(time.time() - start, 3), 0.001)
     tp       = round(n_positions / elapsed)
     return {
         "step"          : "Variant_Calling_FreeBayes",
@@ -533,7 +532,7 @@ def simulate_annotation(n_variants=50000):
         }
         annotated += 1
 
-    elapsed = round(time.time() - start, 3)
+    elapsed = max(round(time.time() - start, 3), 0.001)
     tp      = round(n_variants / elapsed)
 
     return {
@@ -579,7 +578,7 @@ def simulate_filtering(n_variants=50000):
         after_func += 1
         final += 1
 
-    elapsed = round(time.time() - start, 3)
+    elapsed = max(round(time.time() - start, 3), 0.001)
     tp      = round(n_variants / elapsed)
 
     return {
