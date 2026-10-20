@@ -9,19 +9,18 @@ import sys
 import subprocess
 from datetime import datetime
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from system_info import get_full_system_profile, print_system_profile
-from report import generate_html_report
-from modules.DNA.wes_benchmark import run_dna_benchmark
-from modules.RNA.rnaseq_benchmark import run_rnaseq_benchmark
-from modules.RNA.scrna_benchmark import run_scrna_benchmark
-from modules.Protein.protein_benchmark import run_protein_benchmark
-from modules.Epigenomics.epigenomics_benchmark import run_epigenomics_benchmark
-from modules.Metagenomics.metagenomics_benchmark import run_metagenomics_benchmark
-from modules.LongRead.longread_benchmark import run_longread_benchmark
-from modules.Assembly.assembly_benchmark import run_assembly_benchmark
-from utils import BioMarkEncoder
+from biomark.system_info import get_full_system_profile, print_system_profile
+from biomark.report import generate_html_report
+from biomark.modules.DNA.wes_benchmark import run_dna_benchmark
+from biomark.modules.RNA.rnaseq_benchmark import run_rnaseq_benchmark
+from biomark.modules.RNA.scrna_benchmark import run_scrna_benchmark
+from biomark.modules.Protein.protein_benchmark import run_protein_benchmark
+from biomark.modules.Epigenomics.epigenomics_benchmark import run_epigenomics_benchmark
+from biomark.modules.Metagenomics.metagenomics_benchmark import run_metagenomics_benchmark
+from biomark.modules.LongRead.longread_benchmark import run_longread_benchmark
+from biomark.modules.Assembly.assembly_benchmark import run_assembly_benchmark
+from biomark.utils import BioMarkEncoder
 
 def print_banner():
     print("""
