@@ -281,7 +281,10 @@ def simulate_alphafold(resources, n_proteins=10):
         ).astype(np.float32)
         # Attention simulation
         for _ in range(3):  # Recycling iterations
-            pair_matrix = pair_matrix @ pair_matrix.T
+            # NumPy 2.0 with Apple's Accelerate can raise spurious floating-point
+            # warnings on matmul even though the values stay finite.
+            with np.errstate(all="ignore"):
+                pair_matrix = pair_matrix @ pair_matrix.T
             pair_matrix = pair_matrix / (pair_matrix.max() + 1e-9)
 
         # pLDDT score (confidence)

@@ -4,6 +4,7 @@ and returns the structure that main.py and report.py rely on.
 These check structure and robustness, not score values, so they pass on any hardware.
 """
 import importlib
+import warnings
 from unittest.mock import patch
 
 import pytest
@@ -85,4 +86,14 @@ def test_big_machine_with_frozen_clock(module_name, func_name):
     module = importlib.import_module(module_name)
     with patch.object(module, "get_system_resources", return_value=dict(BIG_MACHINE)), \
          patch("time.time", return_value=1000.0):
+        _check_result(getattr(module, func_name)())
+
+
+@pytest.mark.parametrize("module_name, func_name", MODULES, ids=IDS)
+def test_no_numeric_warnings_leak_to_users(module_name, func_name):
+    """Clients should never see NumPy RuntimeWarnings (e.g. spurious matmul warnings on macOS)."""
+    module = importlib.import_module(module_name)
+    with patch.object(module, "get_system_resources", return_value=dict(BIG_MACHINE)), \
+         warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
         _check_result(getattr(module, func_name)())
